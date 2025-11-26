@@ -22,7 +22,41 @@ To interface an LED with the 8051 microcontroller and control its operation.
 5.	Introduce a delay.
 6.	Repeat the process continuously.
 ## Program:
+Program (Keil - 8051 Assembly)
+
+
+; led_blink.asm  - Blink LED on AT89C51 P1.0
+; Assemble with Keil for AT89C51, produce HEX for Proteus simulation.
+
+                ORG 0000H       ; Reset vector
+
+START:          MOV P1, #0FFH   ; Release Port1 (pull-ups) - make sure pins are high by default
+                CLR A
+MAIN_LOOP:      SETB P1.0       ; Turn ON LED (assuming LED anode -> P1.0, cathode -> GND via resistor)
+                ACALL DELAY     ; Call delay
+                CLR P1.0        ; Turn OFF LED
+                ACALL DELAY     ; Call delay
+                SJMP MAIN_LOOP  ; Repeat forever
+
+; -----------------------
+; DELAY subroutine
+; Nested loops using R7 (outer) and R6 (inner)
+; Adjust values for longer/shorter delays
+; -----------------------
+DELAY:          MOV R7, #0FFH  ; Outer loop count (255)
+DELAY_INNER:    MOV R6, #0FFH  ; Inner loop count (255)
+DELAY_LOOP1:    DJNZ R6, DELAY_LOOP1
+                DJNZ R7, DELAY_INNER
+                RET
+
+                END
+
 ## Output:
+KEIL OUTPUT:
+<img width="939" height="499" alt="image" src="https://github.com/user-attachments/assets/3fa2ea96-010e-4d8e-8ea4-901e33c30405" />
+PROTEUS OUTPUT:
+<img width="939" height="500" alt="image" src="https://github.com/user-attachments/assets/245ab0ed-92c3-4e10-bb5b-19f02da10db3" />
+
 ## Result:
 The LED interfacing with the 8051 microcontroller has been successfully implemented and simulated using Keil and Proteus.
 
